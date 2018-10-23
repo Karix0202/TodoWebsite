@@ -1,17 +1,24 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import View
-from .forms import UserCreationForm
+from .forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponse
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 
 class LoginView(View):
     template = 'login.html'
 
     def get(self, request):
-        return render(request, self.template, {})
+        form = AuthenticationForm(request.POST or None)
+        return render(request, self.template, {'form': form})
 
     def post(self, request):
-        pass
+        form = AuthenticationForm(request.POST or None)
+
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('home:url')
+        return render(request, self.template, {'form': form, 'errors': form.errors})
 
 class RegisterView(View):
     template = 'register.html'
@@ -32,3 +39,7 @@ class RegisterView(View):
             return render(request, 'success_register.html', {})
 
         return render(request, self.template, {'form': form, 'errors': form.errors})
+
+def logout_user(request):
+    logout(request)
+    return redirect('/')
