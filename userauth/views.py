@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import View
 from .forms import UserCreationForm
+from django.http import HttpResponse
+from django.contrib.auth import authenticate
 
 class LoginView(View):
     template = 'login.html'
@@ -19,4 +21,14 @@ class RegisterView(View):
         return render(request, self.template, {'form': form})
 
     def post(self, request):
-        pass
+        form = UserCreationForm(request.POST or None, request.FILES or None)
+
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.clean_password2
+            user = authenticate(username=username, password=password)
+
+            return render(request, 'success_register.html', {})
+
+        return render(request, self.template, {'form': form, 'errors': form.errors})

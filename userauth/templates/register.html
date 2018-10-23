@@ -7,25 +7,33 @@
             <h2>Hello my dear new User!</h2>
         </div>
         <div class="col-12 col-md-6">
-                <form action="/your-name/" method="post">
+                <form action="{% url 'userauth:register' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-group">
+                        {{ form.username.label }}
                         {{ form.username }}
                     </div>
                     <div class="form-group">
+                        {{ form.email.label }}
                         {{ form.email }}
                     </div>
                     <div class="form-group">
+                        {{ user.profile_image.label }}
                         {{ form.profile_image }}
                     </div>
                     <div class="form-group">
+                        {{ form.password1.label }}
                         {{ form.password1 }}
                     </div>
                     <div class="form-group">
+                        {{ form.password2.label }}
                         {{ form.password2 }}
                     </div>
                     <input type="submit" class="btn btn-primary" value="Register">
                 </form>
+                {% if errors %}
+                    {{ errors }}
+                {% endif %}
         </div>        
     </div>
 {% endblock %}
