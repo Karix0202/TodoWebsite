@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block container %}
+    <div style="margin-top: 15px;"></div>
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <h2>Hello my dear new User!</h2>
+        </div>
+        <div class="col-12 col-md-6">
+                <form action="/your-name/" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ form.username }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.email }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.profile_image }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password1 }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password2 }}
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="Register">
+                </form>
+        </div>        
+    </div>
+{% endblock %}
