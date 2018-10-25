@@ -1,34 +1,40 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from .forms import UserCreationForm, AuthenticationForm
+from .forms import UserCreationForm, AuthenticationForm, LoginForm
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse
 
 class LoginView(View):
     template = 'login.html'
 
     def get(self, request):
-        form = AuthenticationForm(request.POST or None)
+        form = LoginForm()
         return render(request, self.template, {'form': form})
 
     def post(self, request):
-        form = AuthenticationForm(request.POST or None)
+        form = LoginForm(request.POST)
 
         if form.is_valid():
-            user = form.get_user()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+
+            user = authenticate(username=username, password=password)
             login(request, user)
-            return redirect('home:url')
+
+            return redirect(reverse('home:index'))
+        
         return render(request, self.template, {'form': form, 'errors': form.errors})
 
 class RegisterView(View):
     template = 'register.html'
 
     def get(self, request):
-        form = UserCreationForm(request.POST or None, request.GET or None)
+        form = UserCreationForm()
         return render(request, self.template, {'form': form})
 
     def post(self, request):
-        form = UserCreationForm(request.POST or None, request.FILES or None)
+        form = UserCreationForm(request.POST, request.FILES)
 
         if form.is_valid():
             form.save()
@@ -42,4 +48,4 @@ class RegisterView(View):
 
 def logout_user(request):
     logout(request)
-    return redirect('/')
+    return redirect(reverse('userauth:login'))

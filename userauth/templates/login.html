@@ -10,11 +10,11 @@
                 <form action="{% url 'userauth:login' %}" method="POST">
                     {% csrf_token %}
                     <div class="form-group">
-                        {{ form.username.label }}
+                        <label for="id_username">{{ form.username.label }}</label>
                         {{ form.username }}
                     </div>
                     <div class="form-group">
-                        {{ form.password.label }}
+                        <label for="id_password">{{ form.password.label }}</label>
                         {{ form.password }}
                     </div>
                     <input type="submit" class="btn btn-primary" value="Log in">
