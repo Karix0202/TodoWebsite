@@ -5,5 +5,4 @@ app_name = 'home'
 
 urlpatterns = [
     path('', index_view, name='index'),
-    path('friends/', include('friends.urls', namespace='friends'))
 ]

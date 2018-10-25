@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block container %}
+    <div style="margin-top: 15px;"></div>
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <p>Search:</p>
+            <form action="{% url 'friends:add' %}" class="form-inline form-search" method="POST">
+                {% csrf_token %}
+                <label for="id_username" class="sr-only">{{ form.username.label }}</label>
+                {{ form.username }}
+                <button class="btn btn-primary" type="submit">Find</button>
+            </form>
+        </div>
+        <div class="col-12 col-md-6">
+            <p>Results:</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $('.form-search').submit(function (e) {
+            e.preventDefault();
+
+            const username = $('#id_username').val();
+            
+            $.ajax({
+                url: '{% url "friends:add" %}',
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    username: username
+                },
+                success: (data) => {
+                    console.log(data)
+                },
+                error: (data) => {
+                    console.log(data)
+                },
+            });
+        });
+    </script>
+{% endblock  %}
