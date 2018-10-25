@@ -8,7 +8,7 @@ class FriendRequest(models.Model):
     accepted = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.sender}|{self.receiver} at {self.sended}'
+        return f'{self.sender} | {self.receiver} at {self.sended}'
     
     class Meta:
         ordering = ('sended',)

@@ -1,13 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.views import View
 from .forms import AddFriendForm
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.db.models import Q
 from userauth.models import User
 from .models import FriendRequest
 from django.contrib.auth.decorators import login_required
 
-class AddFriendView(View):
+class SendFriendRequestView(View):
     def get(self, request):
         form = AddFriendForm()
         return render(request, 'add_friend.html', {'form': form})
@@ -49,4 +49,32 @@ class AddFriendView(View):
 
 @login_required
 def add_friend(request, id):
-    pass
+    if request.user.id == id:
+        return HttpResponse('its you')
+
+    receiver = User.objects.filter(id=id).first()
+
+    if FriendRequest.objects.filter(receiver=receiver).filter(sender=request.user).first() is not None or FriendRequest.objects.filter(sender=receiver).filter(receiver=request.user).first() is not None:
+        return HttpResponse(status=500)
+
+    friend_request = FriendRequest(receiver=receiver, sender=request.user)
+    friend_request.save()
+
+    return redirect(reverse('friends:find'))
+
+@login_required
+def index(request):
+    waiting_for_accept = FriendRequest.objects.all().filter(receiver=request.user).filter(accepted=False)
+    sended = FriendRequest.objects.all().filter(sender=request.user).filter(accepted=False)
+    friends = FriendRequest.objects.all().filter(
+        Q(receiver=request.user) |
+        Q(sender=request.user)
+    ).filter(accepted=True)
+
+    print(sended)
+
+    return render(request, 'list.html', {
+        'waiting_for_accept': waiting_for_accept,
+        'sended': sended,
+        'friends': friends,
+    })

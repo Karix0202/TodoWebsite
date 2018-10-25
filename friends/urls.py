@@ -1,9 +1,11 @@
 from django.urls import path
-from .views import AddFriendView
+from .views import SendFriendRequestView, add_friend, index
 from django.contrib.auth.decorators import login_required
 
 app_name = 'friends'
 
 urlpatterns = [
-    path('add/', login_required(AddFriendView.as_view()), name='add')
+    path('find/', login_required(SendFriendRequestView.as_view()), name='find'),
+    path('send/<int:id>/', add_friend, name='add'),
+    path('', index, name='index')
 ]

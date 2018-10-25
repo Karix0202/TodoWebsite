@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-12 col-md-6">
             <p>Search:</p>
-            <form action="{% url 'friends:add' %}" class="form-inline form-search" method="POST">
+            <form action="{% url 'friends:find' %}" class="form-inline form-search" method="POST">
                 {% csrf_token %}
                 <label for="id_username" class="sr-only">{{ form.username.label }}</label>
                 {{ form.username }}
@@ -19,7 +19,7 @@
                     {% for user in users %}
                         <div class="row">
                             <div class="col-8">{{ user.username }}</div>
-                            <div class="col-4"><a href="#">Add</a></div>
+                            <div class="col-4"><a href="{% url 'friends:add' id=user.id %}">Add</a></div>
                         </div>
                     {% endfor %}
                 {% endif %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block container %}
+    <div style="margin-top: 15px;"></div>
+    <div class="row">
+        <div class="col-12 col-md-4">
+            <p>Waiting for accept</p>
+            <ul>
+                {% for req in waiting_for_accept %}
+                    <li>{{ req.sender.username }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-12 col-md-4">
+            <p>Sened</p>
+            <ul>
+                {% for req in sended %}
+                    <li>{{ req.receiver.username }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-12 col-md-4">
+            <p>Friends</p>
+            <ul>
+                {% for req in friends %}
+                    {% if request.user.id == req.sender.id %}
+                        <li>{{ req.receiver.username }}</li>    
+                    {% else %}
+                        <li>{{ req.sender.username }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
