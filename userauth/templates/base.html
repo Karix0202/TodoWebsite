@@ -8,8 +8,24 @@
     <title>Document</title>
 </head>
 <body>
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="/">TodoWebsite</a>
+        {% if request.user.is_authenticated %}
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a href="{% url 'home:index' %}" class="nav-link">Index</a>
+                    </li>
+                </ul>
+            </div>
+            <span class="navbar-text">
+                <img src="{{ request.user.profile_image.url }}" alt="user-icon" style="max-width: 40px;">
+                {{ request.user.username|capfirst }}
+            </span>
+        {% endif %}
     </nav>
     <div class="container">
         {% block container %}

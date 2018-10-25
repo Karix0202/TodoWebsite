@@ -5,14 +5,21 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 
+def is_user_authenticated(request):
+    return request.user.is_authenticated
+
 class LoginView(View):
     template = 'login.html'
 
     def get(self, request):
+        if is_user_authenticated(request):
+            return redirect(reverse('home:index'))
         form = LoginForm()
         return render(request, self.template, {'form': form})
 
     def post(self, request):
+        if is_user_authenticated(request):
+            return redirect(reverse('home:index'))
         form = LoginForm(request.POST)
 
         if form.is_valid():
@@ -30,10 +37,14 @@ class RegisterView(View):
     template = 'register.html'
 
     def get(self, request):
+        if is_user_authenticated(request):
+            return redirect(reverse('home:index'))
         form = UserCreationForm()
         return render(request, self.template, {'form': form})
 
     def post(self, request):
+        if is_user_authenticated(request):
+            return redirect(reverse('home:index'))
         form = UserCreationForm(request.POST, request.FILES)
 
         if form.is_valid():
