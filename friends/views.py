@@ -5,6 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.db.models import Q
 from userauth.models import User
 from .models import FriendRequest
+from django.contrib.auth.decorators import login_required
 
 class AddFriendView(View):
     def get(self, request):
@@ -12,14 +13,16 @@ class AddFriendView(View):
         return render(request, 'add_friend.html', {'form': form})
 
     def post(self, request):
-        if not request.POST.get('username'):
-            return HttpResponse(status=500)
+        form = AddFriendForm(request.POST)
 
-        username = request.POST.get('username')
-        users = self.get_users(request, username)
-        print(users)
+        ctx = {'form': form}
 
-        return JsonResponse(users)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            users = self.get_users(request, username)
+            ctx['users'] = users
+
+        return render(request, 'add_friend.html', ctx)
 
     def get_user_by_his_username(self, request, username):
         return User.objects.filter(
@@ -42,7 +45,8 @@ class AddFriendView(View):
                 }
 
     def get_users(self, request, username):
-        users = {'users': []}
-        for user in self.get_proper_users(request, username):
-            users['users'].append(user)
-        return users
+        return [user for user in self.get_proper_users(request, username)]
+
+@login_required
+def add_friend(request, id):
+    pass

@@ -9,36 +9,21 @@
                 {% csrf_token %}
                 <label for="id_username" class="sr-only">{{ form.username.label }}</label>
                 {{ form.username }}
-                <button class="btn btn-primary" type="submit">Find</button>
+                <button class="btn btn-primary" type="submit" id='search-for-user'>Find</button>
             </form>
         </div>
         <div class="col-12 col-md-6">
             <p>Results:</p>
+            <div id="list-of-users">
+                {% if users %}
+                    {% for user in users %}
+                        <div class="row">
+                            <div class="col-8">{{ user.username }}</div>
+                            <div class="col-4"><a href="#">Add</a></div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}
-
-{% block js %}
-    <script>
-        $('.form-search').submit(function (e) {
-            e.preventDefault();
-
-            const username = $('#id_username').val();
-            
-            $.ajax({
-                url: '{% url "friends:add" %}',
-                type: 'POST',
-                data: {
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                    username: username
-                },
-                success: (data) => {
-                    console.log(data)
-                },
-                error: (data) => {
-                    console.log(data)
-                },
-            });
-        });
-    </script>
-{% endblock  %}
