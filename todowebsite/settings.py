@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'userauth',
     'home',
     'friends',
+    'todo',
 ]
 
 MIDDLEWARE = [
