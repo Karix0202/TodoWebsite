@@ -7,15 +7,15 @@
             <p>Waiting for accept</p>
             <ul>
                 {% for req in waiting_for_accept %}
-                    <li>{{ req.sender.username }}</li>
+                    <li>{{ req.sender.username }} | <a href="{% url 'friends:accept' id=req.id %}">Accept</a>, <a href="{% url 'friends:delete' id=req.id %}">Decline</a></li>
                 {% endfor %}
             </ul>
         </div>
         <div class="col-12 col-md-4">
-            <p>Sened</p>
+            <p>Sended</p>
             <ul>
                 {% for req in sended %}
-                    <li>{{ req.receiver.username }}</li>
+                    <li>{{ req.receiver.username }} | <a href="{% url 'friends:delete' id=req.id %}">Cancel</a></li>
                 {% endfor %}
             </ul>
         </div>
@@ -24,9 +24,9 @@
             <ul>
                 {% for req in friends %}
                     {% if request.user.id == req.sender.id %}
-                        <li>{{ req.receiver.username }}</li>    
+                        <li>{{ req.receiver.username }} | <a href="{% url 'friends:delete' id=req.id %}">Delete</a></li>    
                     {% else %}
-                        <li>{{ req.sender.username }}</li>
+                        <li>{{ req.sender.username }} | <a href="{% url 'friends:delete' id=req.id %}">Delete</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>

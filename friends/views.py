@@ -64,17 +64,33 @@ def add_friend(request, id):
 
 @login_required
 def index(request):
-    waiting_for_accept = FriendRequest.objects.all().filter(receiver=request.user).filter(accepted=False)
-    sended = FriendRequest.objects.all().filter(sender=request.user).filter(accepted=False)
-    friends = FriendRequest.objects.all().filter(
+    waiting_for_accept = FriendRequest.objects.filter(receiver=request.user).filter(accepted=False)
+    sended = FriendRequest.objects.filter(sender=request.user).filter(accepted=False)
+    friends = FriendRequest.objects.filter(
         Q(receiver=request.user) |
         Q(sender=request.user)
     ).filter(accepted=True)
-
-    print(sended)
 
     return render(request, 'list.html', {
         'waiting_for_accept': waiting_for_accept,
         'sended': sended,
         'friends': friends,
     })
+
+@login_required
+def cancel_request(request, id):
+    req = get_object_or_404(FriendRequest, pk=id)
+    req.delete()
+    return redirect(reverse('friends:index'))
+
+@login_required
+def accept(request, id):
+    friend_request = get_object_or_404(FriendRequest, pk=id)
+
+    if friend_request.receiver != request.user:
+        return HttpResponse(status=404)
+
+    friend_request.accepted = True
+    friend_request.save()
+
+    return redirect(reverse('friends:index'))
