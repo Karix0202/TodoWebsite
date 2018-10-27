@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 class SendFriendRequestView(View):
     def get(self, request):
         form = AddFriendForm()
-        return render(request, 'add_friend.html', {'form': form})
+        return render(request, 'friends/add_friend.html', {'form': form})
 
     def post(self, request):
         form = AddFriendForm(request.POST)
@@ -22,7 +22,7 @@ class SendFriendRequestView(View):
             users = self.get_users(request, username)
             ctx['users'] = users
 
-        return render(request, 'add_friend.html', ctx)
+        return render(request, 'friends/add_friend.html', ctx)
 
     def get_user_by_his_username(self, request, username):
         return User.objects.filter(
@@ -71,7 +71,7 @@ def index(request):
         Q(sender=request.user)
     ).filter(accepted=True)
 
-    return render(request, 'list.html', {
+    return render(request, 'friends/list.html', {
         'waiting_for_accept': waiting_for_accept,
         'sended': sended,
         'friends': friends,

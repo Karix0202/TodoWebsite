@@ -9,7 +9,7 @@ def is_user_authenticated(request):
     return request.user.is_authenticated
 
 class LoginView(View):
-    template = 'login.html'
+    template = 'userauth/login.html'
 
     def get(self, request):
         if is_user_authenticated(request):
@@ -34,7 +34,7 @@ class LoginView(View):
         return render(request, self.template, {'form': form, 'errors': form.errors})
 
 class RegisterView(View):
-    template = 'register.html'
+    template = 'userauth/register.html'
 
     def get(self, request):
         if is_user_authenticated(request):
@@ -53,7 +53,7 @@ class RegisterView(View):
             password = form.clean_password2
             user = authenticate(username=username, password=password)
 
-            return render(request, 'success_register.html', {})
+            return render(request, 'userauth/success_register.html', {})
 
         return render(request, self.template, {'form': form, 'errors': form.errors})
 

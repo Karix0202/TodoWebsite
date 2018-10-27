@@ -2,23 +2,27 @@ from django.shortcuts import render, redirect, reverse
 from django.views import View
 from .forms import CreateTodoGroupForm
 from friends.models import FriendRequest
+from .models import TodoGroup
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 
 class CreateTodoGroupView(View):
     def get(self, request):
         form = CreateTodoGroupForm()
         friends = self.get_friends(request)
-        return render(request, 'create.html', {'form': form, 'friends': friends})
+        return render(request, 'todo/create.html', {'form': form, 'friends': friends})
 
     def post(self, request):
         form = CreateTodoGroupForm(request.POST, request.FILES)
 
         if form.is_valid():
-            form.save(commit=True)
+            group = form.save()
+            group.members.add(request.user)
+            group.save()
 
-            return redirect(reverse('home:index'))
+            return redirect(reverse('todo:index'))
         
-        return render(request, 'create.html', {'form': form, 'errors': form.errors})
+        return render(request, 'todo/create.html', {'form': form, 'errors': form.errors})
 
     def filter_friendships(self, request):
         friends = FriendRequest.objects.filter(
@@ -34,3 +38,9 @@ class CreateTodoGroupView(View):
 
     def get_friends(self, request):
         return [user for user in self.filter_friendships(request)]
+
+@login_required
+def index(request):
+    groups = TodoGroup.objects.filter(members__id=request.user.id).all()
+    
+    return render(request, 'todo/index.html', {'groups': groups})

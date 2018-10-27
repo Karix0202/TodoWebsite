@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block container %}
+    <div style="margin-top: 15px;"></div>
+    <div>
+        <ul>
+            {% for group in groups %}
+                <li>{{ group.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
