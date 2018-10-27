@@ -132,3 +132,5 @@ AUTH_USER_MODEL = 'userauth.User'
 
 LOGIN_REDIRECT_URL = 'home/'
 LOGOUT_REDIRECT_URL = '/'
+
+SESSION_COOKIE_AGE = (12 * 60) * (60 * 60 * 24 * 30)

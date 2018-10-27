@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import TodoGroup
 
-# Register your models here.
+@admin.register(TodoGroup)
+class TodoGroupAdmin(admin.ModelAdmin):
+    pass
