@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser as UserBase
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 import os
 import uuid
 
@@ -13,3 +15,10 @@ class User(UserBase):
     
     def __str__(self):
         return self.email
+
+@receiver(post_delete, sender=User)
+def _post_delete_receiver(sender, instance, **kwargs):
+    if sender is User:
+        storage, path = instance.profile_image.storage, instance.profile_image.path
+        storage.delete(path)
+    

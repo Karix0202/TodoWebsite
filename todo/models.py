@@ -48,4 +48,18 @@ def _post_save_receiver(sender, instance, **kwargs):
     if not instance.slug:
         instance.slug = create_slug(instance)
     
+class Todo(models.Model):
+    group = models.ForeignKey(TodoGroup, on_delete=models.CASCADE, related_name='group')
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='creator')
+    target = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+    done = models.BooleanField(default=False)
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
+
+    def __str__(self):
+        return '%s to %s' %(self.target[:10] + '...', self.group.name)
+
+    class Meta:
+        ordering = ('-created',)
 
