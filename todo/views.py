@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views import View
 from .forms import CreateTodoGroupForm
 from friends.models import FriendRequest
 from .models import TodoGroup
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 class CreateTodoGroupView(View):
     def get(self, request):
@@ -44,3 +45,12 @@ def index(request):
     groups = TodoGroup.objects.filter(members__id=request.user.id).all()
     
     return render(request, 'todo/index.html', {'groups': groups})
+
+@login_required
+def group(request, slug):
+    group = TodoGroup.objects.filter(slug=slug).first()
+
+    if group is None:
+        return HttpResponse(status=404)
+
+    return render(request, 'todo/group.html', {'group': group})

@@ -3,9 +3,10 @@
 {% block container %}
     <div style="margin-top: 15px;"></div>
     <div>
+        <h2>Groups that you belong to:</h2>
         <ul>
             {% for group in groups %}
-                <li>{{ group.name }}</li>
+                <li><a href="{{ group.get_absolute_url }}">{{ group.name }}</a></li>
             {% endfor %}
         </ul>
     </div>

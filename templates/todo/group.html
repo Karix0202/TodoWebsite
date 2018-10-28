@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block container %}
+    <h2>Group: {{ group.name }}</h2>
+    <img src="{{ group.photo.url }}" alt="" style="height: 100xp; width: 100px; overflow: hidden;">    
+    <h3>Posts:</h3>
+{% endblock %}
