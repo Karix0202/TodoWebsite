@@ -93,4 +93,12 @@ def accept(request, id):
     friend_request.accepted = True
     friend_request.save()
 
+    user = request.user
+    user.friends.add(friend_request.sender)
+    user.save()
+
+    friend = friend_request.sender
+    friend.friends.add(user)
+    friend.save()
+
     return redirect(reverse('friends:index'))
