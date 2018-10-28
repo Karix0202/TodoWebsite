@@ -2,6 +2,35 @@
 
 {% block container %}
     <h2>Group: {{ group.name }}</h2>
-    <img src="{{ group.photo.url }}" alt="" style="height: 100xp; width: 100px; overflow: hidden;">    
+    <img src="{{ group.photo.url }}" alt="" style="height: 100xp; width: 100px; overflow: hidden;"> 
+    <h3>Dodaj</h3>
+    <form action="{% url 'todo:single_group' slug=group.slug %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" value="{{ group.pk }}" name="group">
+        <input type="hidden" value="{{ request.user.pk }}" name="creator">
+        <div class="form-group">
+            <label for="id_target">{{ form.target.label }}</label>
+            {{ form.target }}
+        </div> 
+        <div class="form-group">
+            <label for="id_target">{{ form.user.label }}</label>
+            {{ form.user }}
+        </div> 
+
+        {% if errros %}
+            {{ errors }}
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
     <h3>Posts:</h3>
+    <div class="row">
+        {% for todo in todos %}
+            <div class="col-12" style="margin-bottom: 10px;">
+                {{ todo.target|capfirst }} <br>
+                {{ todo.creator.username }} <br>
+                {{ todo.created }} <br>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

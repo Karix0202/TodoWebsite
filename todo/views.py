@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views import View
-from .forms import CreateTodoGroupForm, TodoForm
+from .forms import CreateTodoGroupForm, AddTodoForm
 from friends.models import FriendRequest
-from .models import TodoGroup
+from .models import TodoGroup, Todo
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -33,12 +33,43 @@ def index(request):
     
     return render(request, 'todo/index.html', {'groups': groups})
 
-@login_required
-def group(request, slug):
-    group = TodoGroup.objects.filter(slug=slug).first()
-    ff = TodoForm(request=request)
+class GroupView(View):
+    def get(self, request, slug):
+        group = TodoGroup.objects.filter(slug=slug).first()
 
-    if group is None:
-        return HttpResponse(status=404)
+        if group is None:
+            return HttpResponse(status=404)
 
-    return render(request, 'todo/group.html', {'group': group})
+        if not request.user in group.members.all():
+            return redirect(reverse('home:index'))
+
+        form = AddTodoForm()
+        form.fields['user'].queryset = group.members.all()
+
+        return render(request, 'todo/group.html', {'group': group, 'form': form, 'todos': self.get_all_todos(group)})
+
+    def post(self, request, slug):
+        group = TodoGroup.objects.filter(slug=slug).first()
+        
+        if group is None:
+            return HttpResponse(status=404)
+
+        if not request.user in group.members.all():
+            return redirect(reverse('home:index'))
+
+        form = AddTodoForm(request.POST)
+        form.fields['user'].queryset = group.members.all()
+
+        context = {'group': group, 'form': form, 'todos': self.get_all_todos(group)}
+
+        if form.is_valid():
+            form.save()
+            return redirect(group.get_absolute_url())
+
+        context['errors'] = forms.errors
+        return render(request, 'todo/group.html', context)
+
+    
+    def get_all_todos(self, group):
+        return Todo.objects.filter(Q(group=group)).all()
+    

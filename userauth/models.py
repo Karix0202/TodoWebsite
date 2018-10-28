@@ -12,7 +12,7 @@ def get_profile_image_path(instance, filename):
 
 class User(UserBase):
     profile_image = models.ImageField(upload_to=get_profile_image_path, blank=True, null=True)
-    friends = models.ManyToManyField('self', blank=True, null=True)
+    friends = models.ManyToManyField('self', blank=True)
     
     def __str__(self):
         return self.username

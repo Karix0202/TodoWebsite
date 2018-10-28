@@ -49,7 +49,7 @@ def _post_save_receiver(sender, instance, **kwargs):
         instance.slug = create_slug(instance)
     
 class Todo(models.Model):
-    group = models.ForeignKey(TodoGroup, on_delete=models.CASCADE, related_name='group')
+    group = models.ForeignKey(TodoGroup, on_delete=models.CASCADE, related_name='todo_group')
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='creator')
     target = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')

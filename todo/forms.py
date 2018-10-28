@@ -11,15 +11,19 @@ class CreateTodoGroupForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'photo': forms.FileInput(attrs={'class': 'form-control'}),
-            'members': forms.SelectMultiple(attrs={'class': 'js-example-basic-multiple form-input form-control'})
+            'members': forms.SelectMultiple(attrs={'class': 'js-example-basic-multiple form-input form-control'}),
         }
         
 
-class TodoForm(forms.ModelForm):
-    def __init__(self, request, *args, **kwargs):
-        super(TodoForm, self).__init__(*args, **kwargs)
-        print(request.user.username)
-
+class AddTodoForm(forms.ModelForm):
     class Meta:
         model = Todo
-        fields = ['target', 'user', 'done']
+        fields = ['target', 'user', 'group', 'creator']
+        widgets = {
+            'target': forms.Textarea(attrs={
+                'class': 'form-control'
+            }),
+            'user': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+        }
