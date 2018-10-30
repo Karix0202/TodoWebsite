@@ -73,3 +73,14 @@ class GroupView(View):
     def get_all_todos(self, group):
         return Todo.objects.filter(Q(group=group)).all()
     
+@login_required
+def change_state(request, id):
+    todo = get_object_or_404(Todo, pk=id)
+
+    if todo.user != request.user:
+        return HttpResponse(status=404)
+
+    todo.done = False if todo.done else True;
+    todo.save()
+
+    return redirect(todo.group.get_absolute_url())

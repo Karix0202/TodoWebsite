@@ -26,10 +26,14 @@
     <h3>Posts:</h3>
     <div class="row">
         {% for todo in todos %}
-            <div class="col-12" style="margin-bottom: 10px;">
-                {{ todo.target|capfirst }} <br>
-                {{ todo.creator.username }} <br>
-                {{ todo.created }} <br>
+            <div class="col-12" style="margin-bottom: 15px; border-bottom: 1px solid #eee;">
+                <p style="margin-bottom: 4px;">Target: {{ todo.target|capfirst }}</p>
+                <p style="margin-bottom: 4px;">User: {{ todo.user }}</p>
+                <p style="margin-bottom: 4px;">Done: {{ todo.done }} 
+                {% if todo.user == request.user %}
+                    <a href="{% url 'todo:change_state' id=todo.id %}">Change</a>
+                {% endif %}</p>
+                <small>Created by: {{ todo.creator.username }}, at: {{ todo.created }}</small>
             </div>
         {% endfor %}
     </div>
