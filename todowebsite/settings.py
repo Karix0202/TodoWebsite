@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'friends',
     'todo',
     'api',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
