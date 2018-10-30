@@ -8,5 +8,6 @@ urlpatterns = [
     path('auth/', include('userauth.urls', namespace='userauth')),
     path('home/', include('home.urls', namespace='home')),
     path('home/friends/', include('friends.urls', namespace='friends')),
-    path('home/todo/', include('todo.urls', namespace='todo'))
+    path('home/todo/', include('todo.urls', namespace='todo')),
+    path('api/', include('api.urls', namespace='api')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
