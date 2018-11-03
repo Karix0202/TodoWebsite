@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser as UserBase
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 import os
 import uuid

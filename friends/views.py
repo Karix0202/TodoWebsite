@@ -41,7 +41,6 @@ class SendFriendRequestView(View):
                 yield {
                     'username': user.username,
                     'id': user.id,
-                    'profile_image': user.profile_image.url
                 }
 
     def get_users(self, request, username):
@@ -80,6 +79,17 @@ def index(request):
 @login_required
 def cancel_request(request, id):
     req = get_object_or_404(FriendRequest, pk=id)
+
+    # if req.accepted is True:
+    #     sender = req.sender
+    #     receiver = req.receiver
+
+    #     sender.friends.remove(receiver)
+    #     receiver.friends.remove(sender)
+        
+    #     sender.save()
+    #     receiver.save()
+
     req.delete()
     return redirect(reverse('friends:index'))
 
@@ -93,12 +103,12 @@ def accept(request, id):
     friend_request.accepted = True
     friend_request.save()
 
-    user = request.user
-    user.friends.add(friend_request.sender)
-    user.save()
+    # user = request.user
+    # user.friends.add(friend_request.sender)
+    # user.save()
 
-    friend = friend_request.sender
-    friend.friends.add(user)
-    friend.save()
+    # friend = friend_request.sender
+    # friend.friends.add(user)
+    # friend.save()
 
     return redirect(reverse('friends:index'))

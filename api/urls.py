@@ -1,9 +1,11 @@
 from django.urls import path
-from rest_framework.authtoken import views
-from .views import TokenAuth
+from .views import FriendRequestView, login, logout
 
 app_name = 'api'
 
+
 urlpatterns = [
-    path('login/', TokenAuth.as_view())
+    path('login/', login),
+    path('logout/', logout),
+    path('friend/', FriendRequestView.as_view()),
 ]
