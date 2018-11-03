@@ -10,13 +10,15 @@ from rest_framework.status import (
     HTTP_500_INTERNAL_SERVER_ERROR
 )
 from rest_framework.response import Response
-from .serializers import UserSerializer, FriendRequestSerializer
+from .serializers import UserSerializer, FriendRequestSerializer, TodoGroupSerializer
 from userauth.models import User
 from django.db.models import Q
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from friends.models import FriendRequest
 from rest_framework.authentication import TokenAuthentication
+from todo.models import TodoGroup
+from rest_framework.viewsets import ViewSet
 
 
 @csrf_exempt
@@ -125,3 +127,24 @@ class FriendRequestView(APIView):
             return Response(serializer.data, status=HTTP_200_OK)
 
         return Response(serializer.errors, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class TodoGroupViewSet(ViewSet):
+    def list(self, request):
+        queryset = TodoGroup.objects.filter(members__id=request.user.id)
+        serializer = TodoGroupSerializer(queryset, many=True)
+
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = TodoGroup.objects.all()
+
+        todo_group = get_object_or_404(queryset, pk=pk)
+
+        if not todo_group in queryset.filter(members__id=request.user.pk):
+            return Response({'message': 'You can not get data from groups that you do not belong to'},
+                            status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+        serializer = TodoGroupSerializer(todo_group)
+
+        return Response(serializer.data)
