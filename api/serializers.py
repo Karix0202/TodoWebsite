@@ -2,11 +2,14 @@ from rest_framework import serializers
 from userauth.models import User
 from friends.models import FriendRequest
 from django.db.models import Q
+from todo.models import TodoGroup
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('pk', 'username', 'profile_image',)
+
 
 class FriendRequestSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,7 +22,7 @@ class FriendRequestSerializer(serializers.ModelSerializer):
             sender = data.get('sender')
             receiver = data.get('receiver')
 
-            if receiver is None: 
+            if receiver is None:
                 raise serializers.ValidationError('User does not exists')
 
             if sender.pk == receiver.pk:
@@ -32,7 +35,6 @@ class FriendRequestSerializer(serializers.ModelSerializer):
 
             if len(queryset) > 0:
                 raise serializers.ValidationError('You have alredy send a friend request to this user')
-
 
         if 'accepted' in data:
             if data.get('accepted') is False:
@@ -50,3 +52,7 @@ class FriendRequestSerializer(serializers.ModelSerializer):
         return instance
 
 
+class TodoGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TodoGroup
+        fields = ('name', 'photo', 'members')
