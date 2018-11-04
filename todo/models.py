@@ -17,6 +17,7 @@ class TodoGroup(models.Model):
     photo = models.ImageField(upload_to=get_group_photo_path)
     slug = models.SlugField(unique=True, blank=True)
     members = models.ManyToManyField(User)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_creator', null=True, blank=True)
     created = models.DateField(auto_now_add=True)
 
     def __str__(self):

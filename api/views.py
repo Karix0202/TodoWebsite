@@ -1,11 +1,11 @@
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes, action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.viewsets import ViewSet
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_200_OK, HTTP_500_INTERNAL_SERVER_ERROR
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_200_OK, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_201_CREATED
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, logout
 from django.db.models import Q
@@ -143,3 +143,12 @@ class TodoGroupViewSet(ViewSet):
         serializer = TodoGroupSerializer(todo_group)
 
         return Response(serializer.data)
+
+    def create(self, request):
+        request.data['creator'] = request.user.pk
+        serializer = TodoGroupSerializer(data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=HTTP_500_INTERNAL_SERVER_ERROR)
