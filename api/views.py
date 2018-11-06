@@ -166,3 +166,15 @@ class TodoGroupViewSet(ViewSet):
         group.delete()
 
         return Response({'message': 'success'}, status=HTTP_200_OK)
+
+    def partial_update(self, request, pk=None):
+        queryset = get_object_or_404(TodoGroup, pk=pk)
+        serializer = CreateOrUpdateTodoGroupSerializer(queryset, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            retrieve_serializer = TodoGroupSerializer(queryset)
+
+            return Response(retrieve_serializer.data)
+
+        return Response(serializer.errors, status=HTTP_500_INTERNAL_SERVER_ERROR)

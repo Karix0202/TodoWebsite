@@ -81,6 +81,18 @@ class CreateOrUpdateTodoGroupSerializer(serializers.ModelSerializer):
 
         return group
 
+    def update(self, instance, validated_data):
+        if 'photo' in validated_data or 'name' in validated_data:
+            if 'photo' in validated_data:
+                instance.photo = validated_data['photo']
+
+            if 'name' in validated_data:
+                instance.name = validated_data['name']
+
+            instance.save()
+
+        return instance
+
 
 class TodoGroupSerializer(serializers.ModelSerializer):
     members = UserSerializer(many=True, read_only=True)
