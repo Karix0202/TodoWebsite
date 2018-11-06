@@ -17,6 +17,7 @@ class FriendRequestSerializer(serializers.ModelSerializer):
         fields = ('pk', 'sender', 'receiver', 'accepted')
 
     def validate(self, data):
+
         if data.get('sender') and data.get('sender'):
             sender = data.get('sender')
             receiver = data.get('receiver')
@@ -50,7 +51,8 @@ class FriendRequestSerializer(serializers.ModelSerializer):
 
         return instance
 
-class CreateTodoGroupSerializer(serializers.ModelSerializer):
+
+class CreateOrUpdateTodoGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = TodoGroup
         fields = ('pk', 'name', 'photo', 'members', 'creator')
@@ -63,7 +65,7 @@ class CreateTodoGroupSerializer(serializers.ModelSerializer):
                 if not member in data.get('creator').friends.all():
                     raise serializers.ValidationError('You cannot create group with users who are not your friends')
 
-        return  data
+        return data
 
     def create(self, validated_data):
         group = TodoGroup()
@@ -78,6 +80,7 @@ class CreateTodoGroupSerializer(serializers.ModelSerializer):
         group.save()
 
         return group
+
 
 class TodoGroupSerializer(serializers.ModelSerializer):
     members = UserSerializer(many=True, read_only=True)

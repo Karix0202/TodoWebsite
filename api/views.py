@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404
 from friends.models import FriendRequest
 from userauth.models import User
 from todo.models import TodoGroup
-from .serializers import UserSerializer, FriendRequestSerializer, TodoGroupSerializer, CreateTodoGroupSerializer
+from .serializers import UserSerializer, FriendRequestSerializer, TodoGroupSerializer, CreateOrUpdateTodoGroupSerializer
 
 
 @csrf_exempt
@@ -146,7 +146,7 @@ class TodoGroupViewSet(ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        serializer = CreateTodoGroupSerializer(data=request.data, partial=True)
+        serializer = CreateOrUpdateTodoGroupSerializer(data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
 
