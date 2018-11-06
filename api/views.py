@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404
 from friends.models import FriendRequest
 from userauth.models import User
 from todo.models import TodoGroup
-from .serializers import UserSerializer, FriendRequestSerializer, TodoGroupSerializer
+from .serializers import UserSerializer, FriendRequestSerializer, TodoGroupSerializer, CreateTodoGroupSerializer
 
 
 @csrf_exempt
@@ -146,11 +146,14 @@ class TodoGroupViewSet(ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        request.data['creator'] = request.user.pk
-        serializer = TodoGroupSerializer(data=request.data, partial=True)
+        serializer = CreateTodoGroupSerializer(data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=HTTP_201_CREATED)
+
+            queryset = TodoGroup.objects.get(pk=serializer.data.get('pk'))
+            retrieve_serializer = TodoGroupSerializer(queryset)
+
+            return Response(retrieve_serializer.data, status=HTTP_201_CREATED)
 
         return Response(serializer.errors, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
