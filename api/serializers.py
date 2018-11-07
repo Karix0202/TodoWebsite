@@ -109,3 +109,18 @@ class RetrieveTodoGroupMembersSerializer(serializers.ModelSerializer):
     class Meta:
         model = TodoGroup
         fields = ('members',)
+
+
+class AddMembersToTodoGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TodoGroup
+        fields = ('members',)
+
+    def update(self, instance, validated_data):
+        for new_member in validated_data['members']:
+            print(new_member)
+            instance.members.add(new_member)
+
+        instance.save()
+
+        return instance

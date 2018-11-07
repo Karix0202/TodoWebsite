@@ -15,7 +15,7 @@ from friends.models import FriendRequest
 from userauth.models import User
 from todo.models import TodoGroup
 from .serializers import UserSerializer, FriendRequestSerializer, TodoGroupSerializer, \
-    CreateOrUpdateTodoGroupSerializer, RetrieveTodoGroupMembersSerializer
+    CreateOrUpdateTodoGroupSerializer, RetrieveTodoGroupMembersSerializer, AddMembersToTodoGroupSerializer
 
 
 @csrf_exempt
@@ -194,9 +194,34 @@ class TodoGroupMembersView(APIView):
             return Response({'message': 'You can not get members of group that you do not belong to'},
                             status=HTTP_500_INTERNAL_SERVER_ERROR)
 
-        serializer = UserSerializer(group.members.all(), many=True)
+        serializer = RetrieveTodoGroupMembersSerializer(group)
 
         return Response(serializer.data)
+
+    def patch(self, request, pk=None):
+        group = get_object_or_404(TodoGroup, pk=pk)
+
+        if request.user.pk is not group.creator.pk:
+            return Response({'message': 'You can not add new user to the group if you are not creator of it'},
+                            status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+        members = User.objects.filter(id__in=request.data.get('members'))
+
+        for member in members:
+            if member not in request.user.friends.all() and member.pk is not request.user.pk:
+                return Response({'message': 'You can not add to group users which are not your friends'},
+                                status=HTTP_500_INTERNAL_SERVER_ERROR)
+            if member in group.members.all():
+                return Response({'message': f'User with username: {member.username} is already member of this group'},
+                                status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+        serializer = AddMembersToTodoGroupSerializer(instance=group, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(RetrieveTodoGroupMembersSerializer(group).data)
+
+        return Response(serializer.errors, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk=None):
         group = get_object_or_404(TodoGroup, pk=pk)
