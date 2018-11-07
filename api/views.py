@@ -14,7 +14,8 @@ from django.shortcuts import get_object_or_404
 from friends.models import FriendRequest
 from userauth.models import User
 from todo.models import TodoGroup
-from .serializers import UserSerializer, FriendRequestSerializer, TodoGroupSerializer, CreateOrUpdateTodoGroupSerializer
+from .serializers import UserSerializer, FriendRequestSerializer, TodoGroupSerializer, \
+    CreateOrUpdateTodoGroupSerializer, RetrieveTodoGroupMembersSerializer
 
 
 @csrf_exempt
@@ -137,7 +138,7 @@ class TodoGroupViewSet(ViewSet):
 
         todo_group = get_object_or_404(queryset, pk=pk)
 
-        if not todo_group in queryset.filter(members__id=request.user.pk):
+        if todo_group not in queryset.filter(members__id=request.user.pk):
             return Response({'message': 'You can not get data from groups that you do not belong to'},
                             status=HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -169,6 +170,11 @@ class TodoGroupViewSet(ViewSet):
 
     def partial_update(self, request, pk=None):
         queryset = get_object_or_404(TodoGroup, pk=pk)
+
+        if queryset.creator.pk is not request.user.pk:
+            return Response({'message': 'You can not change information about group in which you are not creator'},
+                            status=HTTP_500_INTERNAL_SERVER_ERROR)
+
         serializer = CreateOrUpdateTodoGroupSerializer(queryset, data=request.data, partial=True)
 
         if serializer.is_valid():
@@ -178,3 +184,44 @@ class TodoGroupViewSet(ViewSet):
             return Response(retrieve_serializer.data)
 
         return Response(serializer.errors, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class TodoGroupMembersView(APIView):
+    def get(self, request, pk=None):
+        group = get_object_or_404(TodoGroup, pk=pk)
+
+        if request.user not in group.members.all():
+            return Response({'message': 'You can not get members of group that you do not belong to'},
+                            status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+        serializer = UserSerializer(group.members.all(), many=True)
+
+        return Response(serializer.data)
+
+    def delete(self, request, pk=None):
+        group = get_object_or_404(TodoGroup, pk=pk)
+
+        if request.user not in group.members.all():
+            return Response({'message': 'You can not get members of group that you do not belong to'},
+                            status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+        if group.creator.pk is not request.user.pk:
+            return Response({'message': 'You can not remove user from group that you are not creator'},
+                            status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+        member = get_object_or_404(User, pk=request.data.get('user'))
+
+        if member not in group.members.all():
+            return Response({'message': 'User is not member of this group'},
+                            status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+        if member.pk is request.user.pk:
+            return Response({'message': 'You can not remove yourself from group if you are creator of it'},
+                            status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+        group.members.remove(member)
+        group.save()
+
+        serializer = RetrieveTodoGroupMembersSerializer(group)
+
+        return Response(serializer.data)

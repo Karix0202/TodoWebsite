@@ -101,3 +101,11 @@ class TodoGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = TodoGroup
         fields = ('pk', 'name', 'photo', 'members', 'creator')
+
+
+class RetrieveTodoGroupMembersSerializer(serializers.ModelSerializer):
+    members = UserSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = TodoGroup
+        fields = ('members',)
