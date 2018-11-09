@@ -62,7 +62,7 @@ class CreateOrUpdateTodoGroupSerializer(serializers.ModelSerializer):
             for member in data.get('members'):
                 if member.pk is data.get('creator').pk:
                     continue
-                if not member in data.get('creator').friends.all():
+                if member not in data.get('creator').friends.all():
                     raise serializers.ValidationError('You cannot create group with users who are not your friends')
 
         return data
