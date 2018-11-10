@@ -5,6 +5,38 @@ from django.db.models import Q
 from todo.models import TodoGroup
 
 
+class CreateUserSerializer(serializers.ModelSerializer):
+    password2 = serializers.CharField(max_length=255)
+
+    class Meta:
+        model = User
+        fields = ('pk', 'username', 'profile_image', 'password', 'email', 'password2')
+
+    def validate(self, data):
+        if User.objects.filter(username=data.get('username')).exists():
+            raise serializers.ValidationError('User with this username already exists')
+        
+        if data.get('password') != data.get('password2'):
+            raise serializers.ValidationError('Passwords are not same')
+
+        if User.objects.filter(email=data.get('email')).exists():
+            raise serializers.ValidationError('User with this email already exists')
+
+        return data
+
+    def create(self, validated_data):
+        user = User()
+
+        user.username = validated_data['username']
+        user.set_password(validated_data['password'])
+        user.profile_image = validated_data['profile_image']
+        user.email = validated_data['email']
+
+        user.save()
+
+        return user
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

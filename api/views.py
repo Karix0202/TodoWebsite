@@ -16,7 +16,7 @@ from userauth.models import User
 from todo.models import TodoGroup
 from .serializers import UserSerializer, FriendRequestSerializer, TodoGroupSerializer, \
     CreateOrUpdateTodoGroupSerializer, RetrieveTodoGroupMembersSerializer, AddMembersToTodoGroupSerializer, \
-    CreateOrUpdateFriendRequest
+    CreateOrUpdateFriendRequest, CreateUserSerializer
 
 
 @csrf_exempt
@@ -26,8 +26,8 @@ def login(request):
     username = request.data.get("username")
     password = request.data.get("password")
     if username is None or password is None:
-        return Response({'error': 'Please provide both username and password'},
-                        status=HTTP_400_BAD_REQUEST)
+        return Response({'message': 'Please provide both username and password'},
+                        status=HTTP_500_INTERNAL_SERVER_ERROR)
     user = authenticate(username=username, password=password)
     if not user:
         return Response({'error': 'Invalid Credentials'},
@@ -35,6 +35,20 @@ def login(request):
     token, _ = Token.objects.get_or_create(user=user)
     return Response({'token': token.key},
                     status=HTTP_200_OK)
+
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes((AllowAny,))
+def register(request):
+    serializer = CreateUserSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+        return Response({'message': 'Success'})
+
+    return Response(serializer.errors, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @permission_classes((IsAuthenticated,))
@@ -74,7 +88,7 @@ class FriendsViewSet(ViewSet):
         context = {
             'friends': UserSerializer(User.objects.filter(
                 id__in=[req.receiver if req.sender.pk is request.user.pk else req.sender.id for req in friends]),
-                                      many=True).data,
+                many=True).data,
             'sent': UserSerializer(User.objects.filter(id__in=[req.receiver.pk for req in sent]), many=True).data,
             'received': UserSerializer(User.objects.filter(id__in=[u.sender.pk for u in received]), many=True).data
         }
