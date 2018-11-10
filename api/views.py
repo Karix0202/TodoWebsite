@@ -15,7 +15,8 @@ from friends.models import FriendRequest
 from userauth.models import User
 from todo.models import TodoGroup
 from .serializers import UserSerializer, FriendRequestSerializer, TodoGroupSerializer, \
-    CreateOrUpdateTodoGroupSerializer, RetrieveTodoGroupMembersSerializer, AddMembersToTodoGroupSerializer
+    CreateOrUpdateTodoGroupSerializer, RetrieveTodoGroupMembersSerializer, AddMembersToTodoGroupSerializer, \
+    CreateOrUpdateFriendRequest
 
 
 @csrf_exempt
@@ -36,8 +37,8 @@ def login(request):
                     status=HTTP_200_OK)
 
 
-@permission_classes((IsAuthenticated))
-@authentication_classes((TokenAuthentication))
+@permission_classes((IsAuthenticated,))
+@authentication_classes((TokenAuthentication,))
 @api_view(['POST'])
 def logout(request):
     token = Token.objects.filter(user=request.user).first()
@@ -49,81 +50,81 @@ def logout(request):
     return Response({'message': 'Successfully logged out'}, status=HTTP_200_OK)
 
 
-class FriendRequestView(APIView):
-    def get(self, request):
-        username = request.query_params.get('username')
-        user = request.user
+@permission_classes((IsAuthenticated,))
+@authentication_classes((TokenAuthentication,))
+@api_view(['GET'])
+def search_for_friends(request, username=None):
+    user = request.user
 
-        queryset = User.objects.filter(Q(username__icontains=username)).exclude(pk=user.pk).exclude(
-            id__in=[u.id for u in user.friends.all()])
-        serializer = UserSerializer(queryset, many=True)
+    queryset = User.objects.filter(Q(username__icontains=username)).exclude(pk=user.pk).exclude(
+        id__in=[u.pk for u in user.friends.all()])
+    serializer = UserSerializer(queryset, many=True)
 
-        return Response(serializer.data, status=HTTP_200_OK)
+    return Response(serializer.data)
 
-    def post(self, request):
-        pk = self.request.data['id']
 
-        data = {
-            'sender': request.user.pk,
-            'receiver': pk
+class FriendsViewSet(ViewSet):
+    def list(self, request):
+        queryset = FriendRequest.objects.filter(Q(receiver=request.user) | Q(sender=request.user))
+
+        friends = queryset.filter(accepted=True)
+        received = queryset.filter(receiver=request.user).exclude(accepted=True)
+        sent = queryset.filter(sender=request.user).exclude(accepted=True)
+
+        context = {
+            'friends': UserSerializer(User.objects.filter(
+                id__in=[req.receiver if req.sender.pk is request.user.pk else req.sender.id for req in friends]),
+                                      many=True).data,
+            'sent': UserSerializer(User.objects.filter(id__in=[req.receiver.pk for req in sent]), many=True).data,
+            'received': UserSerializer(User.objects.filter(id__in=[u.sender.pk for u in received]), many=True).data
         }
 
-        serializer = FriendRequestSerializer(data=data)
+        return Response(context)
+
+    def create(self, request):
+        serializer = CreateOrUpdateFriendRequest(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=HTTP_200_OK)
+            retrieve_serializer = FriendRequestSerializer(FriendRequest.objects.get(pk=serializer.data.get('pk')))
+            return Response(retrieve_serializer.data)
 
         return Response(serializer.errors, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def delete(self, requset):
-        pk = self.request.data['id']
+    def partial_update(self, request, pk=None):
+        friend_request = get_object_or_404(FriendRequest, pk=pk)
+        user_id = request.user.pk
 
-        user = requset.user
-        second_user = get_object_or_404(User, pk=pk)
+        if user_id is not friend_request.receiver.pk and user_id is not friend_request.sender.pk:
+            return Response({
+                'message': 'You can not accept others\' friend requests'
+            }, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
-        friend_request = FriendRequest.objects.filter(
-            (Q(sender=user) & Q(receiver=second_user)) |
-            (Q(sender=second_user) & Q(receiver=user))
-        ).first()
+        if friend_request.accepted:
+            return Response({
+                'message': 'Friend request is already accepted'
+            }, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
-        if friend_request is None:
-            return Response('Friend request not found', status=HTTP_404_NOT_FOUND)
+        serializer = CreateOrUpdateFriendRequest(friend_request, data=request.data, partial=True)
 
-        if friend_request.receiver.pk != user.pk == friend_request.sender.pk != user.pk:
-            return Response('You are not one of the users from this friend request',
-                            status=HTTP_500_INTERNAL_SERVER_ERROR)
+        if serializer.is_valid():
+            serializer.save()
+            retrieve_serializer = FriendRequestSerializer(FriendRequest.objects.get(pk=serializer.data.get('pk')))
+            return Response(retrieve_serializer.data)
+
+        return Response(serializer.errors, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def destroy(self, request, pk=None):
+        friend_request = get_object_or_404(FriendRequest, pk=pk)
+
+        if friend_request.receiver.pk is not request.user.pk and friend_request.sender.pk is not request.user.pk:
+            return Response({
+                'message': 'You can not delete others\' friend requests'
+            }, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
         friend_request.delete()
 
-        return Response(status=HTTP_200_OK)
-
-    def patch(self, request):
-        queryset = FriendRequest.objects.get(pk=request.data.get('id'))
-
-        user_id = request.user.pk
-
-        if user_id is not queryset.receiver.pk and user_id is not queryset.sender.pk:
-            return Response({
-                'non_field_errors': [
-                    "You can not accept others' friend requests"
-                ]
-            }, status=HTTP_500_INTERNAL_SERVER_ERROR)
-
-        if queryset.accepted:
-            return Response({
-                'non_field_errors': [
-                    'Friend request is already accepted'
-                ]
-            }, status=HTTP_500_INTERNAL_SERVER_ERROR)
-
-        serializer = FriendRequestSerializer(queryset, data=request.data, partial=True)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=HTTP_200_OK)
-
-        return Response(serializer.errors, status=HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'message': 'Success'})
 
 
 class TodoGroupViewSet(ViewSet):
