@@ -5,8 +5,10 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 
+
 def is_user_authenticated(request):
     return request.user.is_authenticated
+
 
 class LoginView(View):
     template = 'userauth/login.html'
@@ -27,11 +29,16 @@ class LoginView(View):
             password = form.cleaned_data['password']
 
             user = authenticate(username=username, password=password)
+
+            if user is None:
+                return render(request, self.template, {'form': form, 'errors': 'User doesn\'t exists. Check username and password again'})
+
             login(request, user)
 
             return redirect(reverse('home:index'))
-        
+
         return render(request, self.template, {'form': form, 'errors': form.errors})
+
 
 class RegisterView(View):
     template = 'userauth/register.html'
@@ -56,6 +63,7 @@ class RegisterView(View):
             return render(request, 'userauth/success_register.html', {})
 
         return render(request, self.template, {'form': form, 'errors': form.errors})
+
 
 def logout_user(request):
     logout(request)

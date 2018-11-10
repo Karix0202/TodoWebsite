@@ -15,7 +15,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if User.objects.filter(username=data.get('username')).exists():
             raise serializers.ValidationError('User with this username already exists')
-        
+
         if data.get('password') != data.get('password2'):
             raise serializers.ValidationError('Passwords are not same')
 

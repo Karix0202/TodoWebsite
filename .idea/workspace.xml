@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="db8b39a6-2f46-45f3-830a-9951f35fa2c8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userauth/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/userauth/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -29,71 +27,35 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="12361" />
+          <entry key="py" value="12511" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="12361" />
+          <entry key="Python" value="12511" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="13" />
+          <entry key="py" value="14" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="13" />
+          <entry key="Python" value="14" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="13" column="28" lean-forward="true" selection-start-line="13" selection-start-column="28" selection-end-line="13" selection-end-column="28" />
-              <folding>
-                <element signature="e#0#28#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="419">
-              <caret line="51" lean-forward="true" selection-start-line="51" selection-end-line="51" />
-              <folding>
-                <element signature="e#0#49#0" expanded="true" />
-                <marker date="1541870763449" expanded="true" signature="1875:2120" ph="..." />
-                <marker date="1541870763449" expanded="true" signature="2936:5656" ph="..." />
-                <marker date="1541870763449" expanded="true" signature="5656:5658" ph="..." />
-                <marker date="1541870763449" expanded="true" signature="7971:7976" ph="..." />
-                <marker date="1541870763449" expanded="true" signature="8429:9659" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/api/serializers.py">
+        <entry file="file://$PROJECT_DIR$/userauth/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="329">
-              <caret line="17" column="8" selection-start-line="17" selection-start-column="8" selection-end-line="17" selection-end-column="8" />
+            <state relative-caret-position="154">
+              <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
               <folding>
-                <element signature="e#0#38#0" expanded="true" />
-                <marker date="1541871002178" expanded="true" signature="291:1236" ph="..." />
-                <marker date="1541871002178" expanded="true" signature="446:924" ph="..." />
-                <marker date="1541871002178" expanded="true" signature="1443:2609" ph="..." />
-                <marker date="1541871002178" expanded="true" signature="1578:2198" ph="..." />
-                <marker date="1541871002178" expanded="true" signature="2935:4165" ph="..." />
-                <marker date="1541871002178" expanded="true" signature="4557:4562" ph="..." />
-                <marker date="1541871002178" expanded="true" signature="4699:4704" ph="..." />
+                <element signature="e#0#45#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -122,6 +84,7 @@
         <option value="$PROJECT_DIR$/api/urls.py" />
         <option value="$PROJECT_DIR$/api/views.py" />
         <option value="$PROJECT_DIR$/api/serializers.py" />
+        <option value="$PROJECT_DIR$/userauth/views.py" />
       </list>
     </option>
   </component>
@@ -134,7 +97,27 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="TodoWebsite" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TodoWebsite" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TodoWebsite" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TodoWebsite" type="462c0819:PsiDirectoryNode" />
+              <item name="media" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TodoWebsite" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TodoWebsite" type="462c0819:PsiDirectoryNode" />
+              <item name="userauth" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="Scope" />
     </panes>
   </component>
@@ -171,7 +154,7 @@
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.27879268" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.27799842" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -227,13 +210,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/userauth/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="738">
-          <caret line="52" column="26" lean-forward="true" selection-start-line="52" selection-start-column="26" selection-end-line="52" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/todo/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="855">
@@ -267,6 +243,23 @@
         <state relative-caret-position="-155" />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/api/serializers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="122">
+          <caret line="8" column="16" lean-forward="true" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+            <marker date="1541871498101" expanded="true" signature="291:1228" ph="..." />
+            <marker date="1541871498101" expanded="true" signature="446:916" ph="..." />
+            <marker date="1541871498101" expanded="true" signature="1435:2601" ph="..." />
+            <marker date="1541871498101" expanded="true" signature="1570:2190" ph="..." />
+            <marker date="1541871498101" expanded="true" signature="2927:4157" ph="..." />
+            <marker date="1541871498101" expanded="true" signature="4549:4554" ph="..." />
+            <marker date="1541871498101" expanded="true" signature="4691:4696" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/api/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="419">
@@ -292,19 +285,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/serializers.py">
+    <entry file="file://$PROJECT_DIR$/userauth/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
-          <caret line="17" column="8" selection-start-line="17" selection-start-column="8" selection-end-line="17" selection-end-column="8" />
+        <state relative-caret-position="154">
+          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
           <folding>
-            <element signature="e#0#38#0" expanded="true" />
-            <marker date="1541871002178" expanded="true" signature="291:1236" ph="..." />
-            <marker date="1541871002178" expanded="true" signature="446:924" ph="..." />
-            <marker date="1541871002178" expanded="true" signature="1443:2609" ph="..." />
-            <marker date="1541871002178" expanded="true" signature="1578:2198" ph="..." />
-            <marker date="1541871002178" expanded="true" signature="2935:4165" ph="..." />
-            <marker date="1541871002178" expanded="true" signature="4557:4562" ph="..." />
-            <marker date="1541871002178" expanded="true" signature="4699:4704" ph="..." />
+            <element signature="e#0#45#0" expanded="true" />
           </folding>
         </state>
       </provider>
