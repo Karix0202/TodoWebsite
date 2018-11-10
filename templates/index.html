@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block container %}
+    <h1>Welcome</h1>
+    <a href="{% url 'userauth:login' %}">Login</a>
+    <a href="{% url 'userauth:register' %}">Register</a>
+{% endblock %}

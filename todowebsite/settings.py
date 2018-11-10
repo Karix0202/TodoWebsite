@@ -89,15 +89,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#Media
+# Media
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-#User auth
+# User auth
 AUTH_USER_MODEL = 'userauth.User'
 
 LOGIN_REDIRECT_URL = 'home/'
 LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/auth/login/'
 
 SESSION_COOKIE_AGE = (12 * 60) * (60 * 60 * 24 * 30)
 
