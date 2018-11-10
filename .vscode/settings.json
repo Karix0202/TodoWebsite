@@ -1,5 +1,0 @@
-{
-    "python.pythonPath": "venv/bin/python",
-    "python.linting.pylintEnabled": false,
-    "editor.fontSize": 14
-}
