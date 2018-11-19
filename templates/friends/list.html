@@ -12,9 +12,9 @@
             </ul>
         </div>
         <div class="col-12 col-md-4">
-            <p>Sended</p>
+            <p>Sent</p>
             <ul>
-                {% for req in sended %}
+                {% for req in sent %}
                     <li>{{ req.receiver.username }} | <a href="{% url 'friends:delete' id=req.id %}">Cancel</a></li>
                 {% endfor %}
             </ul>
